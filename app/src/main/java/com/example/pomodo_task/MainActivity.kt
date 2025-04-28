@@ -26,6 +26,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
@@ -87,6 +88,7 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.fillMaxSize(),
                         topBar = {
                             TopAppBar(
+                                modifier = Modifier.shadow(1.dp),
                                 colors = TopAppBarDefaults.topAppBarColors(
                                     containerColor = if (isSystemInDarkTheme()) MaterialTheme.colorScheme.surface else Color.White
                                 ),

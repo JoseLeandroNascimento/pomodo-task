@@ -60,7 +60,7 @@ fun MyTasks(modifier: Modifier = Modifier) {
     ) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(8.dp),
+            contentPadding = PaddingValues(vertical = 8.dp, horizontal = 4.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             item {
@@ -123,7 +123,7 @@ fun CategoryFilter(modifier: Modifier = Modifier, categories: List<String>) {
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = PaddingValues(8.dp)
+        contentPadding = PaddingValues(horizontal =  4.dp)
     ) {
         items(count = categories.size) {
             FilterChip(
