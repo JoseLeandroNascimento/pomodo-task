@@ -60,7 +60,7 @@ fun MyTasks(
     }
 
     Box(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize().padding(vertical = 4.dp, horizontal = 8.dp),
     ) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
