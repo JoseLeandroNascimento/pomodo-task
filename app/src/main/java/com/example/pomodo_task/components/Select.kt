@@ -1,3 +1,4 @@
+import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.rememberScrollState
@@ -8,6 +9,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
@@ -74,7 +76,9 @@ fun Select(
         )
 
         DropdownMenu(
-            modifier = Modifier.exposedDropdownSize(),
+            modifier = Modifier
+                .exposedDropdownSize()
+                .background(if (isSystemInDarkTheme()) MaterialTheme.colorScheme.surface else Color.White),
             expanded = expanded,
             onDismissRequest = { expanded = false },
             properties = PopupProperties(
@@ -92,7 +96,9 @@ fun Select(
                         onValueChange(selectionOption.value)
                         expanded = false
                     },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(if (isSystemInDarkTheme()) MaterialTheme.colorScheme.surface else Color.White),
                 )
             }
         }
