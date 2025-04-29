@@ -5,14 +5,18 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.pomodo_task.screen.CreateTask
 import com.example.pomodo_task.screen.MyTasks
 
 @Composable
 fun Router(modifier: Modifier = Modifier,navController: NavHostController) {
 
-    NavHost(modifier = modifier,navController = navController, startDestination = Screen.MY_TASKS.route){
+    NavHost(modifier = modifier,navController = navController, startDestination = Screen.CREATE_TASK.route){
         composable(Screen.MY_TASKS.route) {
             MyTasks()
+        }
+        composable(Screen.CREATE_TASK.route) {
+            CreateTask()
         }
     }
 

@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -61,7 +62,8 @@ fun MyTasks(modifier: Modifier = Modifier) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(vertical = 8.dp, horizontal = 4.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+
         ) {
             item {
                 CategoryFilter(modifier = Modifier, categories = categories)
@@ -69,21 +71,23 @@ fun MyTasks(modifier: Modifier = Modifier) {
             item {
                 TaskHeader( )
             }
-            items(count = 10) {
+            items(count = 10, key = { it}) {
                 TaskCard()
             }
         }
 
-        IconButton(
+        FloatingActionButton(
             modifier = Modifier
                 .align(alignment = Alignment.BottomEnd)
                 .padding(bottom = 44.dp, end = 28.dp)
-                .size(60.dp)
-                .background(color = Green300, shape = CircleShape),
-            onClick = {},
+            ,
+            containerColor = Green300,
+            shape = CircleShape,
+            onClick = {}
         ) {
             Icon(imageVector = Icons.Default.Add, contentDescription = null, tint = Color.White)
         }
+
     }
 
 }

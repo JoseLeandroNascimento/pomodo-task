@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccessTime
+import androidx.compose.material.icons.filled.Checklist
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -39,10 +41,12 @@ import kotlinx.coroutines.launch
 val optionsMenu: List<MenuModalDrawerItem> = listOf(
     MenuModalDrawerItem(
         label = "Minhas tarefas",
+        icon = Icons.Default.Checklist,
         route = Screen.MY_TASKS
     ),
     MenuModalDrawerItem(
         label = "Performace",
+        icon = Icons.Default.AccessTime,
         route = Screen.PERFORMACE
     )
 )

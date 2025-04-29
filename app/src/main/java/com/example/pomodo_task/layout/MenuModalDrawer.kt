@@ -5,6 +5,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
@@ -12,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -24,6 +26,7 @@ import kotlinx.coroutines.launch
 
 data class MenuModalDrawerItem(
     val label: String,
+    val icon: ImageVector,
     val route: Screen
 )
 
@@ -52,6 +55,7 @@ fun MenuModalDrawer(
                         fontWeight = FontWeight.Medium
                     )
                 },
+                icon = { Icon(imageVector = options[routeIndex].icon, contentDescription = null) },
                 selected = options[routeIndex].route.route == currentRoute,
                 onClick = {
                     scope.launch {
