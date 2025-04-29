@@ -1,7 +1,6 @@
 package com.example.pomodo_task.screen
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,7 +9,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
@@ -34,13 +32,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.pomodo_task.R
+import com.example.pomodo_task.Screen
 import com.example.pomodo_task.components.TaskCard
 import com.example.pomodo_task.ui.theme.Gray200
 import com.example.pomodo_task.ui.theme.Green300
 
 @Composable
-fun MyTasks(modifier: Modifier = Modifier) {
+fun MyTasks(
+    modifier: Modifier = Modifier,
+    navController: NavHostController? = null
+) {
 
 
     val categories by remember {
@@ -64,14 +67,14 @@ fun MyTasks(modifier: Modifier = Modifier) {
             contentPadding = PaddingValues(vertical = 8.dp, horizontal = 4.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
 
-        ) {
+            ) {
             item {
                 CategoryFilter(modifier = Modifier, categories = categories)
             }
             item {
-                TaskHeader( )
+                TaskHeader()
             }
-            items(count = 10, key = { it}) {
+            items(count = 10, key = { it }) {
                 TaskCard()
             }
         }
@@ -79,11 +82,14 @@ fun MyTasks(modifier: Modifier = Modifier) {
         FloatingActionButton(
             modifier = Modifier
                 .align(alignment = Alignment.BottomEnd)
-                .padding(bottom = 44.dp, end = 28.dp)
-            ,
+                .padding(bottom = 44.dp, end = 28.dp),
             containerColor = Green300,
             shape = CircleShape,
-            onClick = {}
+            onClick = {
+                navController?.let {
+                    navController.navigate(Screen.CREATE_TASK.route)
+                }
+            }
         ) {
             Icon(imageVector = Icons.Default.Add, contentDescription = null, tint = Color.White)
         }
@@ -127,7 +133,7 @@ fun CategoryFilter(modifier: Modifier = Modifier, categories: List<String>) {
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = PaddingValues(horizontal =  4.dp)
+        contentPadding = PaddingValues(horizontal = 4.dp)
     ) {
         items(count = categories.size) {
             FilterChip(

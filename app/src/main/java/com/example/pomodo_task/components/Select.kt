@@ -1,6 +1,7 @@
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.DropdownMenu
@@ -9,7 +10,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.PopupProperties
 import com.example.pomodo_task.ui.theme.Green300
@@ -36,13 +37,12 @@ data class Option(
 @Composable
 fun Select(
     modifier: Modifier = Modifier,
-    value: String,
-    onValueChange: (Any) -> Unit,
+    value: Option? = null,
+    onValueChange: (Option) -> Unit,
     label: String,
     options: List<Option>
 ) {
     var expanded by remember { mutableStateOf(false) }
-    var selected by remember { mutableStateOf<Option?>(null) }
 
     ExposedDropdownMenuBox(
         expanded = expanded,
@@ -54,7 +54,7 @@ fun Select(
                 .fillMaxWidth()
                 .menuAnchor(),
             readOnly = true,
-            value = if (selected != null) selected!!.label else "",
+            value = value?.label ?: "",
             onValueChange = {},
             label = {
                 Text(
@@ -77,6 +77,7 @@ fun Select(
 
         DropdownMenu(
             modifier = Modifier
+                .heightIn(max = 220.dp)
                 .exposedDropdownSize()
                 .background(if (isSystemInDarkTheme()) MaterialTheme.colorScheme.surface else Color.White),
             expanded = expanded,
@@ -92,8 +93,7 @@ fun Select(
                 DropdownMenuItem(
                     text = { Text(selectionOption.label) },
                     onClick = {
-                        selected = selectionOption
-                        onValueChange(selectionOption.value)
+                        onValueChange(selectionOption)
                         expanded = false
                     },
                     modifier = Modifier
@@ -106,13 +106,14 @@ fun Select(
 }
 
 
+
 @Preview(showBackground = true)
 @Composable
 private fun SelectPreview() {
     Select(
         modifier = Modifier.fillMaxWidth(),
         label = "Categoria",
-        value = "Categoria A",
+        value = null,
         onValueChange = {},
         options = listOf()
     )

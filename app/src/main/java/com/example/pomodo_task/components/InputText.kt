@@ -23,6 +23,8 @@ fun InputText(
     value: String,
     onValueChange: (String) -> Unit,
     label: String,
+    minLines: Int = 1,
+    maxLines: Int = 1
 ) {
 
     OutlinedTextField(
@@ -42,6 +44,8 @@ fun InputText(
         ),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
         value = value,
+        minLines = minLines,
+        maxLines = maxLines,
         onValueChange = { onValueChange(it) }
     )
 }
