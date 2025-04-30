@@ -5,5 +5,7 @@ class Screen(val route: String) {
         val MY_TASKS = Screen(route = "my_tasks")
         val PERFORMACE = Screen(route = "performace")
         val CREATE_TASK = Screen(route = "create_task")
+        val CATEGORIES = Screen(route = "categories")
+
     }
 }

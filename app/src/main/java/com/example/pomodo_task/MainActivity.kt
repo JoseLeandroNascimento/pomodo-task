@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTime
+import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.Checklist
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.DrawerValue
@@ -43,6 +44,11 @@ val optionsMenu: List<MenuModalDrawerItem> = listOf(
         label = "Minhas tarefas",
         icon = Icons.Default.Checklist,
         route = Screen.MY_TASKS
+    ),
+    MenuModalDrawerItem(
+        label = "Categorias",
+        icon = Icons.Default.Category,
+        route = Screen.CATEGORIES
     ),
     MenuModalDrawerItem(
         label = "Performace",

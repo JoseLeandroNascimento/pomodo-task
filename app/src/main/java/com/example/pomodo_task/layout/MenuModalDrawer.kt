@@ -7,6 +7,7 @@ import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationDrawerItem
+import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
@@ -22,6 +23,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.pomodo_task.Screen
 import com.example.pomodo_task.optionsMenu
+import com.example.pomodo_task.ui.theme.Green300
+import com.example.pomodo_task.ui.theme.Green40
 import kotlinx.coroutines.launch
 
 data class MenuModalDrawerItem(
@@ -65,6 +68,11 @@ fun MenuModalDrawer(
                         navigationDrawerState.close()
                     }
                 },
+                colors = NavigationDrawerItemDefaults.colors(
+                    selectedIconColor = Green300,
+                    selectedTextColor = Green300,
+                    selectedContainerColor = Green300.copy(alpha = .1f)
+                ),
                 shape = RoundedCornerShape(4.dp)
             )
         }
