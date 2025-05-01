@@ -32,6 +32,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,8 +44,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.pomodo_task.ui.theme.Gray400
 import com.example.pomodo_task.ui.theme.Green300
+import com.example.pomodo_task.viewModels.CreateCategoryModalViewModel
 
 @Composable
 fun Category(modifier: Modifier = Modifier) {
@@ -76,7 +79,20 @@ fun Category(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun CategoriesHeader(modifier: Modifier = Modifier) {
+fun CategoriesHeader(
+    modifier: Modifier = Modifier,
+    createCategoryModalViewModel: CreateCategoryModalViewModel = viewModel()
+) {
+
+    val showModal by createCategoryModalViewModel.showModal.collectAsState()
+
+    CreateCatory(
+        show = showModal,
+        onDismissRequest = {
+            createCategoryModalViewModel.changeVisibility()
+        }
+    )
+
     Row(
         modifier = modifier
             .padding(horizontal = 8.dp, vertical = 4.dp)
@@ -93,7 +109,9 @@ fun CategoriesHeader(modifier: Modifier = Modifier) {
         )
 
         TextButton(
-            onClick = {},
+            onClick = {
+                createCategoryModalViewModel.changeVisibility()
+            },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.Transparent,
                 contentColor = Green300
