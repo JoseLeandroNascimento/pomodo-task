@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -31,31 +32,59 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.DialogProperties
+import com.example.pomodo_task.components.HueBar
 import com.example.pomodo_task.components.InputText
+import com.example.pomodo_task.components.SatValPanel
 import com.example.pomodo_task.ui.theme.Green300
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateCatory(
     modifier: Modifier = Modifier,
-    onDismissRequest: ()->Unit,
+    onDismissRequest: () -> Unit,
     show: Boolean
 ) {
 
-    if(show){
+    var categoryName by remember { mutableStateOf("") }
+
+    val hsv = remember {
+        val hsv = floatArrayOf(0f, 0f, 0f)
+        android.graphics.Color.colorToHSV(Color.Blue.toArgb(), hsv)
+        mutableStateOf(
+            Triple(hsv[0], hsv[1], hsv[2])
+        )
+    }
+    val backgroundColor = remember(hsv.value) {
+        mutableStateOf(
+            Color.hsv(
+                hsv.value.first,
+                hsv.value.second,
+                hsv.value.third
+            )
+        )
+    }
+
+    if (show) {
 
         BasicAlertDialog(
             modifier = modifier,
             onDismissRequest = {
                 onDismissRequest()
             },
+            properties = DialogProperties(usePlatformDefaultWidth = false)
         ) {
 
             Card(
@@ -66,28 +95,66 @@ fun CreateCatory(
 
             ) {
                 Column(
-                    modifier = Modifier.padding(20.dp),
+                    modifier = Modifier
+                        .padding(20.dp)
+                        .width(300.dp),
                     verticalArrangement = Arrangement.spacedBy(15.dp)
                 ) {
-                    Text(text = "Nova categoria")
-                    InputText(
-                        value = "",
-                        onValueChange = {},
-                        label = "Categoria"
-
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = "Nova categoria"
                     )
 
-                    ColorSelect()
+                    InputText(
+                        modifier = Modifier.fillMaxWidth(),
+                        value = categoryName,
+                        onValueChange = {
+                            categoryName = it
+                        },
+                        label = "Categoria",
+                        leadingIcon = {
+                            Box(
+                                modifier = Modifier
+                                    .size(25.dp)
+                                    .background(color = backgroundColor.value, shape = CircleShape)
+                            )
+                        }
+                    )
 
-                    Spacer(modifier =Modifier.height(8.dp))
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+
+                        SatValPanel(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(100.dp),
+                            hue = hsv.value.first
+                        ) { sat, value ->
+                            hsv.value = Triple(hsv.value.first, sat, value)
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
+                        HueBar(
+                            modifier = Modifier
+                                .height(18.dp)
+                                .fillMaxWidth(),
+                        ) { hue ->
+                            hsv.value = Triple(hue, hsv.value.second, hsv.value.third)
+                        }
+
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceAround
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
 
                         Button(
-                            modifier = Modifier,
+                            modifier = Modifier.weight(1f),
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = Green300
                             ),
@@ -113,7 +180,7 @@ fun CreateCatory(
                         }
 
                         OutlinedButton(
-                            modifier = Modifier,
+                            modifier = Modifier.weight(1f),
                             border = BorderStroke(width = 1.5.dp, color = Green300),
                             onClick = {
                                 onDismissRequest()

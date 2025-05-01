@@ -24,7 +24,9 @@ fun InputText(
     onValueChange: (String) -> Unit,
     label: String,
     minLines: Int = 1,
-    maxLines: Int = 1
+    maxLines: Int = 1,
+    trailingIcon: @Composable (() -> Unit)? = null,
+    leadingIcon: @Composable (() -> Unit)? = null,
 ) {
 
     OutlinedTextField(
@@ -42,6 +44,8 @@ fun InputText(
             unfocusedContainerColor = if (isSystemInDarkTheme()) MaterialTheme.colorScheme.surface else Color.White,
             focusedLabelColor = Green300
         ),
+        trailingIcon = trailingIcon,
+        leadingIcon = leadingIcon,
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
         value = value,
         minLines = minLines,
