@@ -15,7 +15,7 @@ fun Router(modifier: Modifier = Modifier, navController: NavHostController) {
     NavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = Screen.CREATE_TASK.route
+        startDestination = Screen.MY_TASKS.route
     ) {
         composable(Screen.MY_TASKS.route) {
             MyTasks(navController = navController)

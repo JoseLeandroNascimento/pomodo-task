@@ -20,6 +20,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,10 +33,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.pomodo_task.R
 import com.example.pomodo_task.Screen
 import com.example.pomodo_task.components.TaskCard
+import com.example.pomodo_task.features.category.data.CategoryEntity
+import com.example.pomodo_task.features.category.presentation.viewModel.CategoryViewModel
 import com.example.pomodo_task.ui.theme.Gray200
 import com.example.pomodo_task.ui.theme.Green300
 
@@ -45,19 +49,10 @@ fun MyTasks(
     navController: NavHostController? = null
 ) {
 
+    val categoryMV:CategoryViewModel = hiltViewModel()
 
-    val categories by remember {
-        mutableStateOf(
-            listOf(
-                "Todo",
-                "Trabalho",
-                "Escola",
-                "Mercado",
-                "Domestica",
-                "Domestica"
-            )
-        )
-    }
+
+    val categories by categoryMV.categories.collectAsState()
 
     Box(
         modifier = modifier.fillMaxSize().padding(vertical = 4.dp, horizontal = 8.dp),
@@ -126,7 +121,7 @@ fun TaskHeader(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun CategoryFilter(modifier: Modifier = Modifier, categories: List<String>) {
+fun CategoryFilter(modifier: Modifier = Modifier, categories: List<CategoryEntity>) {
 
     LazyRow(
         modifier = modifier
@@ -139,7 +134,7 @@ fun CategoryFilter(modifier: Modifier = Modifier, categories: List<String>) {
             FilterChip(
                 selected = true,
                 onClick = {},
-                label = { Text(text = categories[it]) }
+                label = { Text(text = categories[it].name) }
             )
         }
     }
