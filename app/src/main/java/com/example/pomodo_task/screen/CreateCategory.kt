@@ -1,5 +1,6 @@
 package com.example.pomodo_task.screen
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
@@ -9,7 +10,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -45,9 +45,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.pomodo_task.components.HueBar
 import com.example.pomodo_task.components.InputText
 import com.example.pomodo_task.components.SatValPanel
+import com.example.pomodo_task.features.category.presentation.viewModel.CategoryViewModel
 import com.example.pomodo_task.ui.theme.Green300
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -57,6 +59,8 @@ fun CreateCatory(
     onDismissRequest: () -> Unit,
     show: Boolean
 ) {
+
+    val categoryVM: CategoryViewModel = hiltViewModel()
 
     var categoryName by remember { mutableStateOf("") }
 
@@ -158,7 +162,16 @@ fun CreateCatory(
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = Green300
                             ),
-                            onClick = {},
+                            onClick = {
+
+                                Log.i("teste",backgroundColor.value.toArgb().toString())
+                                categoryVM.addCategory(
+                                    name = categoryName,
+                                    active = true,
+                                    color = backgroundColor.value.toArgb()
+                                )
+                                onDismissRequest()
+                            },
                             shape = RoundedCornerShape(8.dp)
                         ) {
                             Row(

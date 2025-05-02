@@ -44,13 +44,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.pomodo_task.features.category.data.CategoryEntity
+import com.example.pomodo_task.features.category.presentation.viewModel.CategoryViewModel
 import com.example.pomodo_task.ui.theme.Gray400
 import com.example.pomodo_task.ui.theme.Green300
 import com.example.pomodo_task.viewModels.CreateCategoryModalViewModel
 
 @Composable
 fun Category(modifier: Modifier = Modifier) {
+
+    val categoryMV: CategoryViewModel = hiltViewModel()
+    val categories by categoryMV.categories.collectAsState()
 
     Column(
         modifier = modifier
@@ -71,8 +77,8 @@ fun Category(modifier: Modifier = Modifier) {
             contentPadding = PaddingValues(vertical = 4.dp)
         ) {
 
-            items(count = 10) {
-                CategoriesItem(item = it)
+            items(count = categories.size) {
+                CategoriesItem(item = categories[it])
             }
         }
     }
@@ -127,9 +133,10 @@ fun CategoriesHeader(
 }
 
 @Composable
-fun CategoriesItem(modifier: Modifier = Modifier, item: Int) {
+fun CategoriesItem(modifier: Modifier = Modifier, item: CategoryEntity) {
 
     var expanded by remember { mutableStateOf(false) }
+    val categoryMV: CategoryViewModel = hiltViewModel()
 
     Card(
         modifier = modifier
@@ -147,7 +154,7 @@ fun CategoriesItem(modifier: Modifier = Modifier, item: Int) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(text = "Categoria $item")
+            Text(text = item.name)
 
             Box(modifier.wrapContentSize(Alignment.TopStart)) {
 
@@ -205,7 +212,9 @@ fun CategoriesItem(modifier: Modifier = Modifier, item: Int) {
                         text = {
                             Text(text = "Deletar")
                         },
-                        onClick = {}
+                        onClick = {
+                            categoryMV.removeCategory(item.id)
+                        }
                     )
                 }
             }

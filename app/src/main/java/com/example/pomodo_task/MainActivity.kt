@@ -37,6 +37,7 @@ import com.example.pomodo_task.layout.MenuModalDrawer
 import com.example.pomodo_task.layout.MenuModalDrawerItem
 import com.example.pomodo_task.layout.ModalDrawerHeader
 import com.example.pomodo_task.ui.theme.PomodotaskTheme
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 val optionsMenu: List<MenuModalDrawerItem> = listOf(
@@ -56,7 +57,7 @@ val optionsMenu: List<MenuModalDrawerItem> = listOf(
         route = Screen.PERFORMACE
     )
 )
-
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
