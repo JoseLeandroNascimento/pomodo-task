@@ -1,4 +1,4 @@
-package com.example.pomodo_task.screen
+package com.example.pomodo_task.features.category.presentation.components
 
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
@@ -64,6 +64,7 @@ fun CreateCatory(
 
     var categoryName by remember { mutableStateOf("") }
 
+
     val hsv = remember {
         val hsv = floatArrayOf(0f, 0f, 0f)
         android.graphics.Color.colorToHSV(Color.Blue.toArgb(), hsv)
@@ -71,15 +72,19 @@ fun CreateCatory(
             Triple(hsv[0], hsv[1], hsv[2])
         )
     }
+
+    val colorInit =  Color.hsv(
+        hsv.value.first,
+        hsv.value.second,
+        hsv.value.third
+    )
+
     val backgroundColor = remember(hsv.value) {
         mutableStateOf(
-            Color.hsv(
-                hsv.value.first,
-                hsv.value.second,
-                hsv.value.third
-            )
+            colorInit
         )
     }
+
 
     if (show) {
 
@@ -163,13 +168,14 @@ fun CreateCatory(
                                 containerColor = Green300
                             ),
                             onClick = {
-
-                                Log.i("teste",backgroundColor.value.toArgb().toString())
                                 categoryVM.addCategory(
                                     name = categoryName,
                                     active = true,
                                     color = backgroundColor.value.toArgb()
                                 )
+
+                                categoryName = ""
+                                backgroundColor.value = colorInit
                                 onDismissRequest()
                             },
                             shape = RoundedCornerShape(8.dp)
@@ -228,26 +234,6 @@ fun CreateCatory(
 
 }
 
-@Composable
-fun ColorSelect(modifier: Modifier = Modifier) {
-
-    Row(
-        modifier = modifier
-            .horizontalScroll(state = rememberScrollState())
-    ) {
-
-        repeat(9) {
-            Box(
-                modifier = Modifier
-                    .size(30.dp)
-                    .background(color = Green300, shape = CircleShape)
-
-            )
-            Spacer(modifier = Modifier.width(7.5.dp))
-        }
-    }
-
-}
 
 
 @Preview(showBackground = true)

@@ -22,6 +22,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,17 +35,30 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.pomodo_task.components.InputDate
 import com.example.pomodo_task.components.InputText
 import com.example.pomodo_task.components.PriorityOption
 import com.example.pomodo_task.components.PrioritySelect
 import com.example.pomodo_task.components.optionsExemple
+import com.example.pomodo_task.features.category.presentation.viewModel.CategoryViewModel
 import com.example.pomodo_task.ui.theme.Green300
+import kotlinx.coroutines.flow.map
 import java.util.Date
 
 
 @Composable
 fun CreateTask(modifier: Modifier = Modifier) {
+
+    val categoryMV: CategoryViewModel = hiltViewModel()
+    val categoriesOptions = categoryMV.categories.map { categories ->
+        categories.map { category ->
+            Option(
+                label = category.name,
+                value = category.id
+            )
+        }
+    }.collectAsState(initial = emptyList()).value
 
     var title by remember { mutableStateOf("") }
     var category by remember { mutableStateOf<Option?>(null) }
@@ -53,65 +67,6 @@ fun CreateTask(modifier: Modifier = Modifier) {
 
 
     val focusManager = LocalFocusManager.current
-
-    val categoriesOptions = listOf(
-        Option(
-            label = "categoria A",
-            value = "A"
-        ),
-        Option(
-            label = "categoria B",
-            value = "B"
-        ),
-        Option(
-            label = "categoria C",
-            value = "C"
-        ),
-        Option(
-            label = "categoria D",
-            value = "D"
-        ),
-        Option(
-            label = "categoria E",
-            value = "E"
-        ),
-        Option(
-            label = "categoria E",
-            value = "E"
-        ),
-        Option(
-            label = "categoria E",
-            value = "E"
-        ),
-        Option(
-            label = "categoria E",
-            value = "E"
-        ),
-        Option(
-            label = "categoria E",
-            value = "E"
-        ),
-        Option(
-            label = "categoria E",
-            value = "E"
-        ),
-        Option(
-            label = "categoria E",
-            value = "E"
-        ),
-        Option(
-            label = "categoria E",
-            value = "E"
-        ),
-        Option(
-            label = "categoria E",
-            value = "E"
-        ),
-        Option(
-            label = "categoria E",
-            value = "E"
-        ),
-    )
 
     Column(
         modifier = modifier

@@ -1,4 +1,4 @@
-package com.example.pomodo_task.screen
+package com.example.pomodo_task.features.category.presentation.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -12,8 +12,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -40,7 +42,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.LineBreak
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -48,9 +53,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.pomodo_task.features.category.data.CategoryEntity
 import com.example.pomodo_task.features.category.presentation.viewModel.CategoryViewModel
+import com.example.pomodo_task.features.category.presentation.viewModel.CreateCategoryModalViewModel
 import com.example.pomodo_task.ui.theme.Gray400
 import com.example.pomodo_task.ui.theme.Green300
-import com.example.pomodo_task.viewModels.CreateCategoryModalViewModel
 
 @Composable
 fun Category(modifier: Modifier = Modifier) {
@@ -154,7 +159,26 @@ fun CategoriesItem(modifier: Modifier = Modifier, item: CategoryEntity) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(text = item.name)
+            Row(
+                modifier = Modifier.weight(1f),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+
+                Box(
+                    modifier = Modifier
+                        .size(25.dp)
+                        .background(color = Color(item.color), shape = CircleShape)
+                )
+                Text(
+                    text = item.name,
+                    style = TextStyle(
+                        lineBreak = LineBreak.Simple
+                    ),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
 
             Box(modifier.wrapContentSize(Alignment.TopStart)) {
 
@@ -186,7 +210,10 @@ fun CategoriesItem(modifier: Modifier = Modifier, item: CategoryEntity) {
                         text = {
                             Text(text = "Editar")
                         },
-                        onClick = {}
+                        onClick = {
+                            expanded = false
+
+                        }
                     )
                     DropdownMenuItem(
                         leadingIcon = {
@@ -199,7 +226,10 @@ fun CategoriesItem(modifier: Modifier = Modifier, item: CategoryEntity) {
                         text = {
                             Text(text = "Ocultar")
                         },
-                        onClick = {}
+                        onClick = {
+                            expanded = false
+
+                        }
                     )
                     DropdownMenuItem(
                         leadingIcon = {
@@ -214,6 +244,7 @@ fun CategoriesItem(modifier: Modifier = Modifier, item: CategoryEntity) {
                         },
                         onClick = {
                             categoryMV.removeCategory(item.id)
+                            expanded = false
                         }
                     )
                 }
