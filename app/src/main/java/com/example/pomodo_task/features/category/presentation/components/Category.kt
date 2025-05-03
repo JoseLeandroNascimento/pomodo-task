@@ -58,9 +58,8 @@ import com.example.pomodo_task.ui.theme.Gray400
 import com.example.pomodo_task.ui.theme.Green300
 
 @Composable
-fun Category(modifier: Modifier = Modifier) {
+fun Category(modifier: Modifier = Modifier, categoryViewModel: CategoryViewModel = hiltViewModel()) {
 
-    val categoryViewModel: CategoryViewModel = hiltViewModel()
     val categories by categoryViewModel.categories.collectAsState()
 
     Column(

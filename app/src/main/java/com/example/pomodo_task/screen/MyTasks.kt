@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -22,8 +23,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -49,13 +48,15 @@ fun MyTasks(
     navController: NavHostController? = null
 ) {
 
-    val categoryMV:CategoryViewModel = hiltViewModel()
+    val categoryMV: CategoryViewModel = hiltViewModel()
 
 
     val categories by categoryMV.categories.collectAsState()
 
     Box(
-        modifier = modifier.fillMaxSize().padding(vertical = 4.dp, horizontal = 8.dp),
+        modifier = modifier
+            .fillMaxSize()
+            .padding(vertical = 4.dp, horizontal = 8.dp),
     ) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
@@ -130,11 +131,11 @@ fun CategoryFilter(modifier: Modifier = Modifier, categories: List<CategoryEntit
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = PaddingValues(horizontal = 4.dp)
     ) {
-        items(count = categories.size) {
+        items(items = categories) { category ->
             FilterChip(
                 selected = true,
                 onClick = {},
-                label = { Text(text = categories[it].name) }
+                label = { Text(text = category.name) }
             )
         }
     }
