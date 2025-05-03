@@ -5,9 +5,9 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.pomodo_task.features.category.presentation.components.Category
-import com.example.pomodo_task.screen.CreateTask
-import com.example.pomodo_task.screen.MyTasks
+import com.example.pomodo_task.features.category.ui.components.Category
+import com.example.pomodo_task.features.task.ui.components.CreateTask
+import com.example.pomodo_task.features.task.ui.components.MyTasks
 
 @Composable
 fun Router(modifier: Modifier = Modifier, navController: NavHostController) {

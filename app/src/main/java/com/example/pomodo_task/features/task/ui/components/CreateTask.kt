@@ -1,4 +1,4 @@
-package com.example.pomodo_task.screen
+package com.example.pomodo_task.features.task.ui.components
 
 import Option
 import Select
@@ -41,17 +41,19 @@ import com.example.pomodo_task.components.InputText
 import com.example.pomodo_task.components.PriorityOption
 import com.example.pomodo_task.components.PrioritySelect
 import com.example.pomodo_task.components.optionsExemple
-import com.example.pomodo_task.features.category.presentation.viewModel.CategoryViewModel
+import com.example.pomodo_task.features.category.ui.viewModel.CategoryViewModel
 import com.example.pomodo_task.ui.theme.Green300
 import kotlinx.coroutines.flow.map
 import java.util.Date
 
 
 @Composable
-fun CreateTask(modifier: Modifier = Modifier) {
+fun CreateTask(
+    modifier: Modifier = Modifier,
+    categoryViewModel: CategoryViewModel = hiltViewModel()
+) {
 
-    val categoryMV: CategoryViewModel = hiltViewModel()
-    val categoriesOptions = categoryMV.categories.map { categories ->
+    val categoriesOptions = categoryViewModel.categories.map { categories ->
         categories.map { category ->
             Option(
                 label = category.name,
@@ -64,7 +66,6 @@ fun CreateTask(modifier: Modifier = Modifier) {
     var category by remember { mutableStateOf<Option?>(null) }
     var priority by remember { mutableStateOf<PriorityOption?>(null) }
     var date by remember { mutableStateOf<Date?>(null) }
-
 
     val focusManager = LocalFocusManager.current
 

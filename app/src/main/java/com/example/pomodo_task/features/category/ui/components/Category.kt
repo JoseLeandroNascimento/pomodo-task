@@ -1,4 +1,4 @@
-package com.example.pomodo_task.features.category.presentation.components
+package com.example.pomodo_task.features.category.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -52,8 +52,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.pomodo_task.features.category.data.CategoryEntity
-import com.example.pomodo_task.features.category.presentation.viewModel.CategoryViewModel
-import com.example.pomodo_task.features.category.presentation.viewModel.CreateCategoryModalViewModel
+import com.example.pomodo_task.features.category.ui.viewModel.CategoryViewModel
+import com.example.pomodo_task.features.category.ui.viewModel.CreateCategoryModalViewModel
 import com.example.pomodo_task.ui.theme.Gray400
 import com.example.pomodo_task.ui.theme.Green300
 

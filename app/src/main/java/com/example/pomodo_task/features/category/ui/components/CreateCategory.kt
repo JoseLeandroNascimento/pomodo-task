@@ -1,9 +1,7 @@
-package com.example.pomodo_task.features.category.presentation.components
+package com.example.pomodo_task.features.category.ui.components
 
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,7 +13,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -49,7 +46,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.pomodo_task.components.HueBar
 import com.example.pomodo_task.components.InputText
 import com.example.pomodo_task.components.SatValPanel
-import com.example.pomodo_task.features.category.presentation.viewModel.CategoryViewModel
+import com.example.pomodo_task.features.category.ui.viewModel.CategoryViewModel
 import com.example.pomodo_task.ui.theme.Green300
 
 @OptIn(ExperimentalMaterial3Api::class)

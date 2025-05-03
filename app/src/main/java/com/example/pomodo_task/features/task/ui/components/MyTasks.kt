@@ -1,4 +1,4 @@
-package com.example.pomodo_task.screen
+package com.example.pomodo_task.features.task.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -38,7 +38,7 @@ import com.example.pomodo_task.R
 import com.example.pomodo_task.Screen
 import com.example.pomodo_task.components.TaskCard
 import com.example.pomodo_task.features.category.data.CategoryEntity
-import com.example.pomodo_task.features.category.presentation.viewModel.CategoryViewModel
+import com.example.pomodo_task.features.category.ui.viewModel.CategoryViewModel
 import com.example.pomodo_task.ui.theme.Gray200
 import com.example.pomodo_task.ui.theme.Green300
 
@@ -48,10 +48,8 @@ fun MyTasks(
     navController: NavHostController? = null
 ) {
 
-    val categoryMV: CategoryViewModel = hiltViewModel()
-
-
-    val categories by categoryMV.categories.collectAsState()
+    val categoryViewModel: CategoryViewModel = hiltViewModel()
+    val categories by categoryViewModel.categories.collectAsState()
 
     Box(
         modifier = modifier

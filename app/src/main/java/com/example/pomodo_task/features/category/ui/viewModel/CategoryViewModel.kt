@@ -1,4 +1,4 @@
-package com.example.pomodo_task.features.category.presentation.viewModel
+package com.example.pomodo_task.features.category.ui.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
