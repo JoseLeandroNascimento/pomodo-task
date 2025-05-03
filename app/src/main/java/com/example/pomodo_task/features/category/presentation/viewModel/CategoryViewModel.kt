@@ -1,16 +1,13 @@
 package com.example.pomodo_task.features.category.presentation.viewModel
 
-import Option
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pomodo_task.features.category.data.CategoryEntity
 import com.example.pomodo_task.features.category.data.CategoryRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 @HiltViewModel

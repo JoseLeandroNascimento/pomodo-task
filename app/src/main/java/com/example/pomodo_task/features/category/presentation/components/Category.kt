@@ -12,9 +12,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -60,8 +60,8 @@ import com.example.pomodo_task.ui.theme.Green300
 @Composable
 fun Category(modifier: Modifier = Modifier) {
 
-    val categoryMV: CategoryViewModel = hiltViewModel()
-    val categories by categoryMV.categories.collectAsState()
+    val categoryViewModel: CategoryViewModel = hiltViewModel()
+    val categories by categoryViewModel.categories.collectAsState()
 
     Column(
         modifier = modifier
@@ -82,8 +82,8 @@ fun Category(modifier: Modifier = Modifier) {
             contentPadding = PaddingValues(vertical = 4.dp)
         ) {
 
-            items(count = categories.size) {
-                CategoriesItem(item = categories[it])
+            items(items = categories, key = { it.id }) { category ->
+                CategoriesItem(item = category)
             }
         }
     }

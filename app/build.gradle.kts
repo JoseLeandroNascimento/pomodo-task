@@ -45,6 +45,9 @@ android {
 
 dependencies {
 
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
+    implementation(libs.androidx.activity)
     val room_version = "2.7.1"
 
     //Room
