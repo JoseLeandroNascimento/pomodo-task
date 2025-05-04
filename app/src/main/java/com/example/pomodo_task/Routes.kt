@@ -21,7 +21,7 @@ fun Router(modifier: Modifier = Modifier, navController: NavHostController) {
             MyTasks(navController = navController)
         }
         composable(Screen.CREATE_TASK.route) {
-            CreateTask()
+            CreateTask(navController = navController)
         }
         composable(Screen.CATEGORIES.route) {
             Category()

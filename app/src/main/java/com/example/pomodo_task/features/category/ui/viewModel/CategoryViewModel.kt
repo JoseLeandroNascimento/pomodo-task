@@ -2,12 +2,13 @@ package com.example.pomodo_task.features.category.ui.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.pomodo_task.features.category.data.CategoryEntity
 import com.example.pomodo_task.features.category.data.CategoryRepository
+import com.example.pomodo_task.features.category.model.CategoryEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 
 @HiltViewModel
@@ -52,6 +53,10 @@ class CategoryViewModel @Inject constructor(
                 )
             )
         }
+    }
+
+    suspend fun getCategoryById(id: Int): CategoryEntity? {
+        return categoryRepository.getById(id).firstOrNull()
     }
 
     fun removeCategory(id: Int) {

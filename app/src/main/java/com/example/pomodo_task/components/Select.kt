@@ -28,19 +28,19 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.PopupProperties
 import com.example.pomodo_task.ui.theme.Green300
 
-data class Option(
+data class Option<T>(
     val label: String,
-    val value: Any
+    val value: T
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Select(
+fun <T>Select(
     modifier: Modifier = Modifier,
-    value: Option? = null,
-    onValueChange: (Option) -> Unit,
+    value: Option<T>? = null,
+    onValueChange: (Option<T>) -> Unit,
     label: String,
-    options: List<Option>
+    options: List<Option<T>>
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -110,7 +110,7 @@ fun Select(
 @Preview(showBackground = true)
 @Composable
 private fun SelectPreview() {
-    Select(
+    Select<Int>(
         modifier = Modifier.fillMaxWidth(),
         label = "Categoria",
         value = null,

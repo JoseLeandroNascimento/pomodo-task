@@ -2,6 +2,7 @@ package com.example.pomodo_task.features.task.ui.components
 
 import Option
 import Select
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -36,12 +37,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.example.pomodo_task.Screen
 import com.example.pomodo_task.components.InputDate
 import com.example.pomodo_task.components.InputText
-import com.example.pomodo_task.components.PriorityOption
 import com.example.pomodo_task.components.PrioritySelect
 import com.example.pomodo_task.components.optionsExemple
 import com.example.pomodo_task.features.category.ui.viewModel.CategoryViewModel
+import com.example.pomodo_task.features.task.data.TaskEntity
+import com.example.pomodo_task.features.task.ui.viewModel.TaskViewModel
 import com.example.pomodo_task.ui.theme.Green300
 import kotlinx.coroutines.flow.map
 import java.util.Date
@@ -50,8 +55,13 @@ import java.util.Date
 @Composable
 fun CreateTask(
     modifier: Modifier = Modifier,
-    categoryViewModel: CategoryViewModel = hiltViewModel()
+    categoryViewModel: CategoryViewModel = hiltViewModel(),
+    navController: NavController
 ) {
+
+    val priorityInit = optionsExemple[0]
+
+    val taskViewMode: TaskViewModel = hiltViewModel()
 
     val categoriesOptions = categoryViewModel.categoriesActive.map { categories ->
         categories.map { category ->
@@ -62,12 +72,62 @@ fun CreateTask(
         }
     }.collectAsState(initial = emptyList()).value
 
+
     var title by remember { mutableStateOf("") }
-    var category by remember { mutableStateOf<Option?>(null) }
-    var priority by remember { mutableStateOf<PriorityOption?>(null) }
+    var description by remember { mutableStateOf("") }
+    var category by remember { mutableStateOf<Option<Int>?>(null) }
+    var priority by remember { mutableStateOf(priorityInit) }
     var date by remember { mutableStateOf<Date?>(null) }
 
     val focusManager = LocalFocusManager.current
+
+
+    fun titleValid() = title.trim().isNotEmpty()
+
+    fun categoryValid() = category != null
+
+    fun descriptionValid() = description.trim().isNotEmpty()
+
+    fun dateValid() = date != null
+
+    fun reset() {
+
+        title = ""
+        description = ""
+        category = null
+        priority = priorityInit
+        date = null
+    }
+
+    fun submit() {
+
+
+        if (titleValid() && categoryValid() &&
+            dateValid() && descriptionValid()
+        ) {
+
+            Log.i("teste", date.toString())
+
+            val data = TaskEntity(
+                name = title,
+                categoryId = category!!.value,
+                description = description,
+                priority = priority.value,
+                dateLimit = Date()
+            )
+
+            taskViewMode.save(data)
+
+            reset()
+
+            navController.navigate(Screen.MY_TASKS.route)
+
+        }
+
+
+    }
+
+
 
     Column(
         modifier = modifier
@@ -93,7 +153,7 @@ fun CreateTask(
                 .fillMaxWidth(),
         )
 
-        Select(
+        Select<Int>(
             label = "Categoria",
             onValueChange = {
                 category = it
@@ -121,8 +181,8 @@ fun CreateTask(
 
         InputText(
             label = "Descrição",
-            onValueChange = { title = it },
-            value = title,
+            onValueChange = { description = it },
+            value = description,
             minLines = 4,
             maxLines = 4,
             modifier = Modifier
@@ -148,7 +208,9 @@ fun CreateTask(
             colors = ButtonDefaults.buttonColors(
                 containerColor = Green300
             ),
-            onClick = {},
+            onClick = {
+                submit()
+            },
             shape = RoundedCornerShape(8.dp)
         ) {
             Row(
@@ -174,5 +236,5 @@ fun CreateTask(
 @Preview(showBackground = true)
 @Composable
 private fun CreateTaskPreview() {
-    CreateTask(modifier = Modifier)
+    CreateTask(modifier = Modifier, navController = rememberNavController())
 }

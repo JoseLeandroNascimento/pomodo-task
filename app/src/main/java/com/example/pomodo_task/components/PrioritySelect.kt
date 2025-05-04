@@ -16,47 +16,47 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.pomodo_task.R
+import com.example.pomodo_task.features.category.model.Priority
 import com.example.pomodo_task.ui.theme.Green300
 
 
 data class PriorityOption(
     val label: String,
     val icon: @Composable() (() -> Unit)? = null,
-    val value: String
+    val value: Int
 )
 
 val optionsExemple = listOf(
 
     PriorityOption(
-        label = "Baixa",
+        label = Priority.BAIXA.label,
         icon = {
             Image(
-                painter = painterResource(id = R.drawable.emoji_flat_cold_face),
+                painter = painterResource(id = Priority.BAIXA.icon),
                 contentDescription = null
             )
         },
-        value = "BAIXA"
+        value = Priority.BAIXA.index
     ),
     PriorityOption(
-        label = "Normal",
+        label = Priority.NORMAL.label,
         icon = {
             Image(
-                painter = painterResource(id = R.drawable.emoji_slightly_smiling_face),
+                painter = painterResource(id = Priority.NORMAL.icon),
                 contentDescription = null
             )
         },
-        value = "NORMAL"
+        value = Priority.NORMAL.index
     ),
     PriorityOption(
-        label = "Alta",
+        label = Priority.ALTA.label,
         icon = {
             Image(
-                painter = painterResource(id = R.drawable.emoji_noto_hot_face),
+                painter = painterResource(id = Priority.ALTA.icon),
                 contentDescription = null
             )
         },
-        value = "ALTA"
+        value = Priority.ALTA.index
     )
 )
 

@@ -1,23 +1,27 @@
 package com.example.pomodo_task.components
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -35,17 +39,30 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.pomodo_task.features.task.data.TaskEntity
 import com.example.pomodo_task.ui.theme.Gray200
 import com.example.pomodo_task.ui.theme.Gray400
+import java.text.SimpleDateFormat
+import java.util.Date
 
+@SuppressLint("SimpleDateFormat")
 @Composable
 fun TaskCard(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    item: TaskEntity
 ) {
     var expanded by remember { mutableStateOf(false) }
+
+    val dateFormat = remember { SimpleDateFormat("dd/MM/yyyy") }
+    val dataFormatted by remember {
+        mutableStateOf(
+            dateFormat.format(item.dateLimit)
+        )
+    }
 
     Card(
         modifier = modifier
@@ -75,12 +92,21 @@ fun TaskCard(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(
-                    text = "Lavar a louça",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = if (isSystemInDarkTheme()) Gray200 else Color.Black
-                )
+                Box(modifier = Modifier
+                    .weight(1f)
+                    .padding(end = 34.dp)
+                    .horizontalScroll(state = rememberScrollState())
+                ) {
+
+                    Text(
+                        text = item.name,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = if (isSystemInDarkTheme()) Gray200 else Color.Black
+                    )
+                }
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(2.dp)
@@ -91,7 +117,7 @@ fun TaskCard(
                         contentDescription = null
                     )
                     Text(
-                        text = "23/04/2025",
+                        text = dataFormatted,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Medium,
                         color = if (isSystemInDarkTheme()) Gray200 else Color.Black
@@ -102,8 +128,8 @@ fun TaskCard(
             Row(
                 horizontalArrangement = Arrangement.spacedBy(14.dp)
             ) {
-                CategoryChip()
-                PriorityChip()
+                CategoryChip(idCategory = item.categoryId)
+                PriorityChip(value = item.priority)
             }
 
             AnimatedVisibility(
@@ -156,5 +182,14 @@ private fun ActionButton(icon: androidx.compose.ui.graphics.vector.ImageVector, 
 @Preview
 @Composable
 private fun TaskCardPreview() {
-    TaskCard()
+    TaskCard(
+        item = TaskEntity(
+            id = 1,
+            name = "teste",
+            priority = 1,
+            description = "",
+            dateLimit = Date(),
+            categoryId = 1
+        )
+    )
 }

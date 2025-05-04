@@ -51,7 +51,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.pomodo_task.features.category.data.CategoryEntity
+import com.example.pomodo_task.features.category.model.CategoryEntity
 import com.example.pomodo_task.features.category.ui.viewModel.CategoryViewModel
 import com.example.pomodo_task.ui.theme.Gray400
 import com.example.pomodo_task.ui.theme.Green300

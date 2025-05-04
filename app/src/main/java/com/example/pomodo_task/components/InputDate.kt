@@ -53,9 +53,13 @@ fun InputDate(
 ) {
 
     var showModal by remember { mutableStateOf(false) }
-    val datePikerState = rememberDatePickerState()
+    val datePikerState = rememberDatePickerState(initialSelectedDateMillis = value?.time ?: Date().time)
     val dateFormat = remember { SimpleDateFormat("dd/MM/yyyy") }
-    var selectedText by remember { mutableStateOf("") }
+    var selectedText by remember {
+        mutableStateOf(
+           ""
+        )
+    }
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
 

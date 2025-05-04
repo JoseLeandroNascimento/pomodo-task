@@ -8,6 +8,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,11 +23,15 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.pomodo_task.R
+import com.example.pomodo_task.features.category.model.Priority
 import com.example.pomodo_task.ui.theme.Gray300
 
 @Composable
-fun PriorityChip(modifier: Modifier = Modifier) {
+fun PriorityChip(modifier: Modifier = Modifier, value: Int) {
+
+    var priority by remember {
+        mutableStateOf(Priority.getPriorityByIndex(value)!!)
+    }
 
     Box(
         modifier = modifier
@@ -35,14 +43,14 @@ fun PriorityChip(modifier: Modifier = Modifier) {
             Image(
                 modifier = Modifier
                     .size(15.dp),
-                painter = painterResource(id = R.drawable.emoji_flat_cold_face),
+                painter = painterResource(id = priority.icon),
                 contentDescription = null
             )
             Text(
                 buildAnnotatedString {
                     append("Prioridade")
                     withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                        append(" baixa")
+                        append(" ${priority.label}")
                     }
                 },
                 fontSize = 12.sp,
@@ -57,5 +65,5 @@ fun PriorityChip(modifier: Modifier = Modifier) {
 @Composable
 private fun PriorityChipPreview() {
 
-    PriorityChip(modifier = Modifier)
+    PriorityChip(modifier = Modifier, value = Priority.BAIXA.index)
 }

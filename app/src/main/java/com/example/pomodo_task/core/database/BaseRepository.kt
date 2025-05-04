@@ -10,5 +10,7 @@ interface BaseRepository<T> {
 
     abstract fun getAll(): Flow<List<T>>
 
+    abstract fun getById(id: Int):Flow<T>
+
     abstract suspend fun update(data: T)
 }

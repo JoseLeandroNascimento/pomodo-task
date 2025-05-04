@@ -37,8 +37,9 @@ import androidx.navigation.NavHostController
 import com.example.pomodo_task.R
 import com.example.pomodo_task.Screen
 import com.example.pomodo_task.components.TaskCard
-import com.example.pomodo_task.features.category.data.CategoryEntity
+import com.example.pomodo_task.features.category.model.CategoryEntity
 import com.example.pomodo_task.features.category.ui.viewModel.CategoryViewModel
+import com.example.pomodo_task.features.task.ui.viewModel.TaskViewModel
 import com.example.pomodo_task.ui.theme.Gray200
 import com.example.pomodo_task.ui.theme.Green300
 
@@ -50,6 +51,9 @@ fun MyTasks(
 
     val categoryViewModel: CategoryViewModel = hiltViewModel()
     val categories by categoryViewModel.categoriesActive.collectAsState()
+
+    val taskViewModel: TaskViewModel = hiltViewModel()
+    val tasks by taskViewModel.tasks.collectAsState()
 
     Box(
         modifier = modifier
@@ -68,8 +72,8 @@ fun MyTasks(
             item {
                 TaskHeader()
             }
-            items(count = 10, key = { it }) {
-                TaskCard()
+            items(items = tasks, key = { it.id }) {
+                TaskCard(item = it)
             }
         }
 

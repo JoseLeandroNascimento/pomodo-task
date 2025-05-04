@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.example.pomodo_task.core.database.AppDatabase
 import com.example.pomodo_task.features.category.data.CategoryDao
+import com.example.pomodo_task.features.task.data.TaskDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,11 +23,18 @@ object AppModule {
             context,
             AppDatabase::class.java,
             "app-database"
-        ).build()
+        )
+            .fallbackToDestructiveMigration(true)
+            .build()
     }
 
     @Provides
-    fun provideUserDao(appDatabase: AppDatabase): CategoryDao {
+    fun provideCategoryDao(appDatabase: AppDatabase): CategoryDao {
         return appDatabase.categoryDao()
+    }
+
+    @Provides
+    fun provideTaskDao(appDatabase: AppDatabase): TaskDao {
+        return appDatabase.taskDao()
     }
 }
