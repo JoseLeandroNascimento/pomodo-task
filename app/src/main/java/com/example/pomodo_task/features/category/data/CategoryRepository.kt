@@ -25,4 +25,8 @@ class CategoryRepository @Inject constructor(
         categoryDao.update(data)
     }
 
+    fun getAllActives():Flow<List<CategoryEntity>>{
+        return categoryDao.getAllActive()
+    }
+
 }

@@ -16,12 +16,21 @@ class CategoryViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _categories = MutableStateFlow<List<CategoryEntity>>(emptyList())
+    private val _categoriesActive = MutableStateFlow<List<CategoryEntity>>(emptyList())
+
     val categories: StateFlow<List<CategoryEntity>> = _categories
+    val categoriesActive: StateFlow<List<CategoryEntity>> = _categoriesActive
 
     init {
         viewModelScope.launch {
             categoryRepository.getAll().collect { categories ->
                 _categories.value = categories
+            }
+        }
+
+        viewModelScope.launch {
+            categoryRepository.getAllActives().collect { categories ->
+                _categoriesActive.value = categories
             }
         }
     }

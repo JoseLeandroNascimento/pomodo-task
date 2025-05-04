@@ -142,9 +142,7 @@ fun CategoriesHeader(
 
         TextButton(
             onClick = {
-                showModal?.let {
-                    it.invoke()
-                }
+                showModal?.invoke()
             },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.Transparent,

@@ -18,6 +18,9 @@ interface CategoryDao {
     @Query("DELETE FROM category_entity WHERE id = :id")
     suspend fun delete(id: Int)
 
+    @Query(value = "SELECT * FROM category_entity WHERE active = 1")
+    fun getAllActive(): Flow<List<CategoryEntity>>
+
     @Update
-    suspend fun update(data:CategoryEntity)
+    suspend fun update(data: CategoryEntity)
 }

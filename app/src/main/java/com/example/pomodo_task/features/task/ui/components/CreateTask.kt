@@ -53,7 +53,7 @@ fun CreateTask(
     categoryViewModel: CategoryViewModel = hiltViewModel()
 ) {
 
-    val categoriesOptions = categoryViewModel.categories.map { categories ->
+    val categoriesOptions = categoryViewModel.categoriesActive.map { categories ->
         categories.map { category ->
             Option(
                 label = category.name,

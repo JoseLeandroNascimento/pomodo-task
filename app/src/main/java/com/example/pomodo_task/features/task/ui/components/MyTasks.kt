@@ -49,7 +49,7 @@ fun MyTasks(
 ) {
 
     val categoryViewModel: CategoryViewModel = hiltViewModel()
-    val categories by categoryViewModel.categories.collectAsState()
+    val categories by categoryViewModel.categoriesActive.collectAsState()
 
     Box(
         modifier = modifier
