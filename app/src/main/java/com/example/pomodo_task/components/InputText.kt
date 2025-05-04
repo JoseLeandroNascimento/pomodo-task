@@ -25,6 +25,8 @@ fun InputText(
     label: String,
     minLines: Int = 1,
     maxLines: Int = 1,
+    isError: Boolean = false,
+    supportingText: @Composable (()-> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
 ) {
@@ -42,12 +44,15 @@ fun InputText(
             focusedIndicatorColor = Green300,
             focusedContainerColor = if (isSystemInDarkTheme()) MaterialTheme.colorScheme.surface else Color.White,
             unfocusedContainerColor = if (isSystemInDarkTheme()) MaterialTheme.colorScheme.surface else Color.White,
-            focusedLabelColor = Green300
+            focusedLabelColor = Green300,
+            errorContainerColor = Color.White
         ),
         trailingIcon = trailingIcon,
         leadingIcon = leadingIcon,
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
         value = value,
+        supportingText = supportingText,
+        isError = isError,
         minLines = minLines,
         maxLines = maxLines,
         onValueChange = { onValueChange(it) }

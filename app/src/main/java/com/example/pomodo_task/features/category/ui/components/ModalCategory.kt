@@ -37,6 +37,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.isSpecified
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -67,6 +68,8 @@ fun ModalCategory(
 
     val categoryViewModel: CategoryViewModel = hiltViewModel()
     var categoryName by remember { mutableStateOf(value?.name ?: "") }
+    val nameInvalidMessage = "Nome de categoria inválido"
+    var showErrorName by remember { mutableStateOf(false) }
 
     val hsv = remember {
         val hsv = floatArrayOf(0f, 0f, 0f)
@@ -87,6 +90,46 @@ fun ModalCategory(
             colorInit
         )
     }
+
+    fun nameValid():Boolean{
+        return categoryName.trim().isNotEmpty()
+    }
+
+    fun isValid():Boolean{
+        return nameValid()
+    }
+
+    fun submit(){
+
+        if(isValid()){
+
+            if (value == null) {
+                categoryViewModel.addCategory(
+                    name = categoryName,
+                    active = true,
+                    color = backgroundColor.value.toArgb()
+                )
+            } else {
+                categoryViewModel.update(
+                    id = value.id,
+                    name = categoryName,
+                    active = true,
+                    color = backgroundColor.value.toArgb()
+                )
+            }
+            showErrorName = false
+            categoryName = ""
+            backgroundColor.value = colorInit
+            onDismissRequest()
+        }else{
+
+            if(categoryName.trim().isEmpty()){
+
+                showErrorName = true
+            }
+        }
+    }
+
 
     BasicAlertDialog(
         modifier = modifier,
@@ -127,7 +170,9 @@ fun ModalCategory(
                                 .size(25.dp)
                                 .background(color = backgroundColor.value, shape = CircleShape)
                         )
-                    }
+                    },
+                    supportingText = { if(!nameValid() && showErrorName) Text(text = nameInvalidMessage)},
+                    isError = !nameValid() && showErrorName
                 )
 
                 Column(
@@ -168,25 +213,7 @@ fun ModalCategory(
                             containerColor = Green300
                         ),
                         onClick = {
-
-                            if (value == null) {
-                                categoryViewModel.addCategory(
-                                    name = categoryName,
-                                    active = true,
-                                    color = backgroundColor.value.toArgb()
-                                )
-                            } else {
-                                categoryViewModel.update(
-                                    id = value.id,
-                                    name = categoryName,
-                                    active = true,
-                                    color = backgroundColor.value.toArgb()
-                                )
-                            }
-
-                            categoryName = ""
-                            backgroundColor.value = colorInit
-                            onDismissRequest()
+                           submit()
                         },
                         shape = RoundedCornerShape(8.dp)
                     ) {
