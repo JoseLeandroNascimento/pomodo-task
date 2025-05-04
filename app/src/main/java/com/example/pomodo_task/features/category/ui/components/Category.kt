@@ -97,22 +97,25 @@ fun Category(
             contentPadding = PaddingValues(vertical = 4.dp)
         ) {
 
-            items(items = categories, key = { it.id }) { category ->
-                CategoriesItem(
-                    item = category,
-                    onEditSelect = { value ->
-                        showModal = true
-                        valueEdit = value
-                    },
-                    onChangeVisibility = { show ->
-                        categoryViewModel.update(
-                            id = category.id,
-                            name = category.name,
-                            color = category.color,
-                            active = show
-                        )
-                    }
-                )
+            if(categories.isNotEmpty()){
+
+                items(items = categories, key = { it.id }) { category ->
+                    CategoriesItem(
+                        item = category,
+                        onEditSelect = { value ->
+                            showModal = true
+                            valueEdit = value
+                        },
+                        onChangeVisibility = { show ->
+                            categoryViewModel.update(
+                                id = category.id,
+                                name = category.name,
+                                color = category.color,
+                                active = show
+                            )
+                        }
+                    )
+                }
             }
         }
     }

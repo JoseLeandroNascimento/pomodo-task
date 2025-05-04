@@ -5,6 +5,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -15,17 +16,21 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -38,6 +43,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -92,10 +98,11 @@ fun TaskCard(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Box(modifier = Modifier
-                    .weight(1f)
-                    .padding(end = 34.dp)
-                    .horizontalScroll(state = rememberScrollState())
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(end = 34.dp)
+                        .horizontalScroll(state = rememberScrollState())
                 ) {
 
                     Text(
@@ -137,35 +144,89 @@ fun TaskCard(
                 enter = fadeIn(),
                 exit = fadeOut()
             ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 20.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    ActionButton(
-                        icon = Icons.Default.PlayArrow,
-                        label = "Iniciar"
-                    )
-                    ActionButton(
-                        icon = Icons.Default.Visibility,
-                        label = "Detalhes"
-                    )
-                    ActionButton(
-                        icon = Icons.Default.MoreVert,
-                        label = "Mais"
-                    )
-                }
+                TaskCardActions()
             }
         }
     }
 }
 
 @Composable
-private fun ActionButton(icon: androidx.compose.ui.graphics.vector.ImageVector, label: String) {
+fun TaskCardActions(modifier: Modifier = Modifier) {
+
+    var expandedMenuMais by remember { mutableStateOf(false) }
+
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(top = 20.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        ActionButton(
+            icon = Icons.Default.PlayArrow,
+            onCLick = {},
+            label = "Iniciar"
+        )
+        ActionButton(
+            icon = Icons.Default.Visibility,
+            onCLick = {},
+            label = "Detalhes"
+        )
+        Box(
+            modifier = Modifier.wrapContentSize(Alignment.TopStart)
+        ) {
+            ActionButton(
+                icon = Icons.Default.MoreVert,
+                onCLick = {
+                    expandedMenuMais = !expandedMenuMais
+                },
+                label = "Mais"
+            )
+
+            DropdownMenu(
+                modifier = Modifier
+                    .background(color = if (isSystemInDarkTheme()) MaterialTheme.colorScheme.surface else Color.White),
+                expanded = expandedMenuMais,
+                onDismissRequest = {
+                    expandedMenuMais = false
+                }
+            ) {
+                DropdownMenuItem(
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Edit,
+                            contentDescription = "edite"
+                        )
+                    },
+                    text = {
+                        Text("Editar")
+                    },
+                    onClick = {}
+                )
+                DropdownMenuItem(
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = "delete"
+                        )
+                    },
+                    text = {
+                        Text("Delete")
+                    },
+                    onClick = {}
+                )
+            }
+        }
+    }
+
+}
+
+@Composable
+private fun ActionButton(icon: ImageVector, onCLick: () -> Unit, label: String) {
     TextButton(
-        onClick = {},
+        onClick = {
+            onCLick()
+        },
         colors = ButtonDefaults.buttonColors(
             containerColor = Color.Transparent,
             contentColor = if (isSystemInDarkTheme()) Color.White else Gray400

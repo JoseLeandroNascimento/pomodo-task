@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 class TaskRepository @Inject constructor(
     val taskDao: TaskDao
-):BaseRepository<TaskEntity>{
+) : BaseRepository<TaskEntity> {
 
     override suspend fun save(data: TaskEntity) {
         taskDao.save(data)
@@ -17,7 +17,7 @@ class TaskRepository @Inject constructor(
     }
 
     override fun getAll(): Flow<List<TaskEntity>> {
-       return taskDao.getAll()
+        return taskDao.getAll()
     }
 
     override fun getById(id: Int): Flow<TaskEntity> {
@@ -26,5 +26,11 @@ class TaskRepository @Inject constructor(
 
     override suspend fun update(data: TaskEntity) {
         TODO("Not yet implemented")
+    }
+
+    fun filter(
+        idCategory: Int? = null
+    ): Flow<List<TaskEntity>> {
+        return taskDao.filter(categoryId = idCategory)
     }
 }

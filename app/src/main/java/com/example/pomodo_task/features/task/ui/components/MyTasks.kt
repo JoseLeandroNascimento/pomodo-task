@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -23,6 +24,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -55,6 +59,9 @@ fun MyTasks(
     val taskViewModel: TaskViewModel = hiltViewModel()
     val tasks by taskViewModel.tasks.collectAsState()
 
+    var categoryFilter by remember { mutableStateOf<CategoryEntity?>(null) }
+
+
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -67,13 +74,24 @@ fun MyTasks(
 
             ) {
             item {
-                CategoryFilter(modifier = Modifier, categories = categories)
+                CategoryFilter(
+                    modifier = Modifier,
+                    value = categoryFilter,
+                    onSelect = {
+                        categoryFilter = it
+                        taskViewModel.setCategoryFilter(categoryFilter?.id)
+                    },
+                    categories = categories
+                )
             }
             item {
                 TaskHeader()
             }
-            items(items = tasks, key = { it.id }) {
-                TaskCard(item = it)
+            if(tasks.isNotEmpty()){
+
+                items(items = tasks, key = { it.id }) {
+                    TaskCard(item = it)
+                }
             }
         }
 
@@ -124,7 +142,12 @@ fun TaskHeader(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun CategoryFilter(modifier: Modifier = Modifier, categories: List<CategoryEntity>) {
+fun CategoryFilter(
+    modifier: Modifier = Modifier,
+    value: CategoryEntity? = null,
+    onSelect: (CategoryEntity?) -> Unit,
+    categories: List<CategoryEntity>
+) {
 
     LazyRow(
         modifier = modifier
@@ -133,10 +156,30 @@ fun CategoryFilter(modifier: Modifier = Modifier, categories: List<CategoryEntit
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = PaddingValues(horizontal = 4.dp)
     ) {
+
+        item {
+            FilterChip(
+                selected = value == null,
+                onClick = {
+                    onSelect(null)
+                },
+                colors = FilterChipDefaults.filterChipColors(
+                    selectedContainerColor = Green300,
+                    selectedLabelColor = Color.White
+                ),
+                label = { Text(text = "Todos") }
+            )
+        }
         items(items = categories) { category ->
             FilterChip(
-                selected = true,
-                onClick = {},
+                selected = if (value != null) category.id == value.id else false,
+                colors = FilterChipDefaults.filterChipColors(
+                    selectedContainerColor = Green300,
+                    selectedLabelColor = Color.White
+                ),
+                onClick = {
+                    onSelect(category)
+                },
                 label = { Text(text = category.name) }
             )
         }

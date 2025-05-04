@@ -12,6 +12,11 @@ interface TaskDao {
     suspend fun save(data: TaskEntity)
 
     @Query(value = "SELECT * FROM task_entity")
-    fun getAll():Flow<List<TaskEntity>>
+    fun getAll(): Flow<List<TaskEntity>>
+
+    @Query(value = "SELECT * FROM task_entity WHERE (:categoryId IS NULL OR category_id = :categoryId)")
+    fun filter(
+        categoryId: Int? = null
+    ): Flow<List<TaskEntity>>
 
 }
