@@ -26,6 +26,25 @@ class CategoryViewModel @Inject constructor(
         }
     }
 
+    fun update(
+        id: Int,
+        name: String,
+        color: Int,
+        active: Boolean
+    ) {
+
+        viewModelScope.launch {
+            categoryRepository.update(
+                CategoryEntity(
+                    id = id,
+                    name = name,
+                    color = color,
+                    active = active
+                )
+            )
+        }
+    }
+
     fun removeCategory(id: Int) {
         viewModelScope.launch {
             categoryRepository.delete(id)

@@ -9,4 +9,6 @@ interface BaseRepository<T> {
     abstract suspend fun delete(id: Int)
 
     abstract fun getAll(): Flow<List<T>>
+
+    abstract suspend fun update(data: T)
 }

@@ -22,6 +22,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -50,17 +51,30 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.pomodo_task.features.category.data.CategoryEntity
 import com.example.pomodo_task.features.category.ui.viewModel.CategoryViewModel
-import com.example.pomodo_task.features.category.ui.viewModel.CreateCategoryModalViewModel
 import com.example.pomodo_task.ui.theme.Gray400
 import com.example.pomodo_task.ui.theme.Green300
 
 @Composable
-fun Category(modifier: Modifier = Modifier, categoryViewModel: CategoryViewModel = hiltViewModel()) {
+fun Category(
+    modifier: Modifier = Modifier,
+    categoryViewModel: CategoryViewModel = hiltViewModel()
+) {
 
     val categories by categoryViewModel.categories.collectAsState()
+    var showModal by remember { mutableStateOf(false) }
+    var valueEdit by remember { mutableStateOf<CategoryData?>(null) }
+
+    if (showModal) {
+        ModalCategory(
+            onDismissRequest = {
+                valueEdit = null
+                showModal = false
+            },
+            value = valueEdit
+        )
+    }
 
     Column(
         modifier = modifier
@@ -68,7 +82,9 @@ fun Category(modifier: Modifier = Modifier, categoryViewModel: CategoryViewModel
             .fillMaxSize()
     ) {
 
-        CategoriesHeader()
+        CategoriesHeader(showModal = {
+            showModal = !showModal
+        })
 
         LazyColumn(
             modifier = Modifier
@@ -82,7 +98,21 @@ fun Category(modifier: Modifier = Modifier, categoryViewModel: CategoryViewModel
         ) {
 
             items(items = categories, key = { it.id }) { category ->
-                CategoriesItem(item = category)
+                CategoriesItem(
+                    item = category,
+                    onEditSelect = { value ->
+                        showModal = true
+                        valueEdit = value
+                    },
+                    onChangeVisibility = { show ->
+                        categoryViewModel.update(
+                            id = category.id,
+                            name = category.name,
+                            color = category.color,
+                            active = show
+                        )
+                    }
+                )
             }
         }
     }
@@ -91,17 +121,9 @@ fun Category(modifier: Modifier = Modifier, categoryViewModel: CategoryViewModel
 @Composable
 fun CategoriesHeader(
     modifier: Modifier = Modifier,
-    createCategoryModalViewModel: CreateCategoryModalViewModel = viewModel()
+    showModal: (() -> Unit)? = null
 ) {
 
-    val showModal by createCategoryModalViewModel.showModal.collectAsState()
-
-    CreateCatory(
-        show = showModal,
-        onDismissRequest = {
-            createCategoryModalViewModel.changeVisibility()
-        }
-    )
 
     Row(
         modifier = modifier
@@ -120,7 +142,9 @@ fun CategoriesHeader(
 
         TextButton(
             onClick = {
-                createCategoryModalViewModel.changeVisibility()
+                showModal?.let {
+                    it.invoke()
+                }
             },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.Transparent,
@@ -137,10 +161,15 @@ fun CategoriesHeader(
 }
 
 @Composable
-fun CategoriesItem(modifier: Modifier = Modifier, item: CategoryEntity) {
+fun CategoriesItem(
+    modifier: Modifier = Modifier,
+    item: CategoryEntity,
+    onEditSelect: (CategoryData) -> Unit,
+    onChangeVisibility: (Boolean) -> Unit
+) {
 
     var expanded by remember { mutableStateOf(false) }
-    val categoryMV: CategoryViewModel = hiltViewModel()
+    val categoryViewModel: CategoryViewModel = hiltViewModel()
 
     Card(
         modifier = modifier
@@ -179,73 +208,93 @@ fun CategoriesItem(modifier: Modifier = Modifier, item: CategoryEntity) {
                 )
             }
 
-            Box(modifier.wrapContentSize(Alignment.TopStart)) {
 
-                IconButton(
-                    modifier = Modifier,
-                    onClick = {
-                        expanded = !expanded
-                    }
-                ) {
-                    Icon(imageVector = Icons.Default.MoreVert, contentDescription = null)
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+
+                if (!item.active) {
+                    Icon(
+                        imageVector = Icons.Default.VisibilityOff,
+                        contentDescription = "visibility"
+                    )
                 }
+                Box(modifier.wrapContentSize(Alignment.TopStart)) {
 
-                DropdownMenu(
-                    modifier = Modifier
-                        .background(color = if (isSystemInDarkTheme()) MaterialTheme.colorScheme.surface else Color.White),
-                    expanded = expanded,
-                    onDismissRequest = {
-                        expanded = false
-                    },
-                ) {
-                    DropdownMenuItem(
-                        leadingIcon = {
-                            Icon(
-                                modifier = Modifier.size(20.dp),
-                                imageVector = Icons.Default.Edit,
-                                contentDescription = null
-                            )
-                        },
-                        text = {
-                            Text(text = "Editar")
-                        },
+                    IconButton(
+                        modifier = Modifier,
                         onClick = {
-                            expanded = false
+                            expanded = !expanded
+                        }
+                    ) {
+                        Icon(imageVector = Icons.Default.MoreVert, contentDescription = null)
+                    }
 
-                        }
-                    )
-                    DropdownMenuItem(
-                        leadingIcon = {
-                            Icon(
-                                modifier = Modifier.size(20.dp),
-                                imageVector = Icons.Default.VisibilityOff,
-                                contentDescription = null
-                            )
-                        },
-                        text = {
-                            Text(text = "Ocultar")
-                        },
-                        onClick = {
+                    DropdownMenu(
+                        modifier = Modifier
+                            .background(color = if (isSystemInDarkTheme()) MaterialTheme.colorScheme.surface else Color.White),
+                        expanded = expanded,
+                        onDismissRequest = {
                             expanded = false
+                        },
+                    ) {
+                        DropdownMenuItem(
+                            leadingIcon = {
+                                Icon(
+                                    modifier = Modifier.size(20.dp),
+                                    imageVector = Icons.Default.Edit,
+                                    contentDescription = null
+                                )
+                            },
+                            text = {
+                                Text(text = "Editar")
+                            },
+                            onClick = {
+                                val valueEdit = CategoryData(
+                                    id = item.id,
+                                    name = item.name,
+                                    active = item.active,
+                                    color = item.color,
+                                )
+                                onEditSelect(valueEdit)
+                                expanded = false
 
-                        }
-                    )
-                    DropdownMenuItem(
-                        leadingIcon = {
-                            Icon(
-                                modifier = Modifier.size(20.dp),
-                                imageVector = Icons.Default.Delete,
-                                contentDescription = null
-                            )
-                        },
-                        text = {
-                            Text(text = "Deletar")
-                        },
-                        onClick = {
-                            categoryMV.removeCategory(item.id)
-                            expanded = false
-                        }
-                    )
+                            }
+                        )
+                        DropdownMenuItem(
+                            leadingIcon = {
+                                Icon(
+                                    modifier = Modifier.size(20.dp),
+                                    imageVector = if(item.active) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                                    contentDescription = null
+                                )
+                            },
+                            text = {
+                                Text(text = if(item.active) "Ocultar" else "Exposição")
+                            },
+                            onClick = {
+                                expanded = false
+                                onChangeVisibility(!item.active)
+
+                            }
+                        )
+                        DropdownMenuItem(
+                            leadingIcon = {
+                                Icon(
+                                    modifier = Modifier.size(20.dp),
+                                    imageVector = Icons.Default.Delete,
+                                    contentDescription = null
+                                )
+                            },
+                            text = {
+                                Text(text = "Deletar")
+                            },
+                            onClick = {
+                                categoryViewModel.removeCategory(item.id)
+                                expanded = false
+                            }
+                        )
+                    }
                 }
             }
         }

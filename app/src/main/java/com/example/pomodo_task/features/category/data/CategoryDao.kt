@@ -3,6 +3,7 @@ package com.example.pomodo_task.features.category.data
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -16,4 +17,7 @@ interface CategoryDao {
 
     @Query("DELETE FROM category_entity WHERE id = :id")
     suspend fun delete(id: Int)
+
+    @Update
+    suspend fun update(data:CategoryEntity)
 }

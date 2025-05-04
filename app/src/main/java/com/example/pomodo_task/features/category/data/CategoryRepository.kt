@@ -20,4 +20,9 @@ class CategoryRepository @Inject constructor(
     override fun getAll():Flow<List<CategoryEntity>>{
         return categoryDao.getAll()
     }
+
+    override suspend fun update(data: CategoryEntity) {
+        categoryDao.update(data)
+    }
+
 }
