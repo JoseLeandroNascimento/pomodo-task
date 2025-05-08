@@ -24,7 +24,6 @@ import androidx.navigation.compose.rememberNavController
 import com.example.pomodo_task.Screen
 import com.example.pomodo_task.optionsMenu
 import com.example.pomodo_task.ui.theme.Green300
-import com.example.pomodo_task.ui.theme.Green40
 import kotlinx.coroutines.launch
 
 data class MenuModalDrawerItem(

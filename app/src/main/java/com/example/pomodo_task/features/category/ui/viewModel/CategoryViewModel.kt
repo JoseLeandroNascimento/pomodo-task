@@ -11,10 +11,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 
+
 @HiltViewModel
 class CategoryViewModel @Inject constructor(
     private val categoryRepository: CategoryRepository
 ) : ViewModel() {
+
 
     private val _categories = MutableStateFlow<List<CategoryEntity>>(emptyList())
     private val _categoriesActive = MutableStateFlow<List<CategoryEntity>>(emptyList())
@@ -23,12 +25,19 @@ class CategoryViewModel @Inject constructor(
     val categoriesActive: StateFlow<List<CategoryEntity>> = _categoriesActive
 
     init {
+        loadCategoriesAll()
+        loadCategoriesActives()
+    }
+
+    private fun loadCategoriesAll(){
         viewModelScope.launch {
             categoryRepository.getAll().collect { categories ->
                 _categories.value = categories
             }
         }
+    }
 
+    private fun loadCategoriesActives(){
         viewModelScope.launch {
             categoryRepository.getAllActives().collect { categories ->
                 _categoriesActive.value = categories

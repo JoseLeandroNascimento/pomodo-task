@@ -104,7 +104,6 @@ fun TaskCard(
                         .padding(end = 34.dp)
                         .horizontalScroll(state = rememberScrollState())
                 ) {
-
                     Text(
                         text = item.name,
                         overflow = TextOverflow.Ellipsis,
@@ -229,14 +228,19 @@ private fun ActionButton(icon: ImageVector, onCLick: () -> Unit, label: String) 
         },
         colors = ButtonDefaults.buttonColors(
             containerColor = Color.Transparent,
-            contentColor = if (isSystemInDarkTheme()) Color.White else Gray400
+            contentColor = if (isSystemInDarkTheme()) Color.White else Gray400,
         )
     ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = null
-        )
-        Text(text = label)
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null
+            )
+            Text(text = label)
+        }
     }
 }
 

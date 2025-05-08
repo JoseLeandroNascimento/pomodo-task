@@ -20,8 +20,10 @@ import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -44,73 +46,90 @@ import com.example.pomodo_task.components.TaskCard
 import com.example.pomodo_task.features.category.model.CategoryEntity
 import com.example.pomodo_task.features.category.ui.viewModel.CategoryViewModel
 import com.example.pomodo_task.features.task.ui.viewModel.TaskViewModel
+import com.example.pomodo_task.layout.TopBarBase
 import com.example.pomodo_task.ui.theme.Gray200
 import com.example.pomodo_task.ui.theme.Green300
 
 @Composable
 fun MyTasks(
     modifier: Modifier = Modifier,
+    onOpenDrawer: (() -> Unit)? = null,
     navController: NavHostController? = null
 ) {
 
     val categoryViewModel: CategoryViewModel = hiltViewModel()
     val categories by categoryViewModel.categoriesActive.collectAsState()
-
     val taskViewModel: TaskViewModel = hiltViewModel()
     val tasks by taskViewModel.tasks.collectAsState()
-
     var categoryFilter by remember { mutableStateOf<CategoryEntity?>(null) }
 
 
-    Box(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(vertical = 4.dp, horizontal = 8.dp),
-    ) {
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(vertical = 8.dp, horizontal = 4.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-
-            ) {
-            item {
-                CategoryFilter(
-                    modifier = Modifier,
-                    value = categoryFilter,
-                    onSelect = {
-                        categoryFilter = it
-                        taskViewModel.setCategoryFilter(categoryFilter?.id)
-                    },
-                    categories = categories
-                )
-            }
-            item {
-                TaskHeader()
-            }
-            if(tasks.isNotEmpty()){
-
-                items(items = tasks, key = { it.id }) {
-                    TaskCard(item = it)
-                }
-            }
-        }
-
-        FloatingActionButton(
-            modifier = Modifier
-                .align(alignment = Alignment.BottomEnd)
-                .padding(bottom = 44.dp, end = 28.dp),
-            containerColor = Green300,
-            shape = CircleShape,
-            onClick = {
-                navController?.let {
-                    navController.navigate(Screen.CREATE_TASK.route)
-                }
-            }
-        ) {
-            Icon(imageVector = Icons.Default.Add, contentDescription = null, tint = Color.White)
-        }
-
+    LaunchedEffect(Unit) {
+        taskViewModel.setCategoryFilter(null)
     }
+
+    Scaffold(
+        topBar = {
+            TopBarBase(
+                onOpenDrawer = {
+                    onOpenDrawer?.invoke()
+                }
+            )
+        }
+    ) { innerPadding ->
+
+        Box(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(vertical = 4.dp, horizontal = 8.dp),
+        ) {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(vertical = 8.dp, horizontal = 4.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+
+                ) {
+                item {
+                    CategoryFilter(
+                        modifier = Modifier,
+                        value = categoryFilter,
+                        onSelect = {
+                            categoryFilter = it
+                            taskViewModel.setCategoryFilter(categoryFilter?.id)
+                        },
+                        categories = categories
+                    )
+                }
+                item {
+                    TaskHeader()
+                }
+                if (tasks.isNotEmpty()) {
+
+                    items(items = tasks, key = { it.id }) {
+                        TaskCard(item = it)
+                    }
+                }
+            }
+
+            FloatingActionButton(
+                modifier = Modifier
+                    .align(alignment = Alignment.BottomEnd)
+                    .padding(bottom = 44.dp, end = 28.dp),
+                containerColor = Green300,
+                shape = CircleShape,
+                onClick = {
+                    navController?.let {
+                        navController.navigate(Screen.CREATE_TASK.route)
+                    }
+                }
+            ) {
+                Icon(imageVector = Icons.Default.Add, contentDescription = null, tint = Color.White)
+            }
+
+        }
+    }
+
 
 }
 

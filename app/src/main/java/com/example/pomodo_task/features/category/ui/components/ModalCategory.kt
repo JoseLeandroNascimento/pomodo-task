@@ -37,18 +37,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.isSpecified
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.pomodo_task.components.HueBar
 import com.example.pomodo_task.components.InputText
 import com.example.pomodo_task.components.SatValPanel
-import com.example.pomodo_task.features.category.ui.viewModel.CategoryViewModel
 import com.example.pomodo_task.ui.theme.Green300
 
 data class CategoryData(
@@ -63,10 +59,10 @@ data class CategoryData(
 fun ModalCategory(
     modifier: Modifier = Modifier,
     onDismissRequest: () -> Unit,
-    value: CategoryData? = null
+    onSubmit: (CategoryData) -> Unit,
+    value: CategoryData? = null,
 ) {
 
-    val categoryViewModel: CategoryViewModel = hiltViewModel()
     var categoryName by remember { mutableStateOf(value?.name ?: "") }
     val nameInvalidMessage = "Nome de categoria inválido"
     var showErrorName by remember { mutableStateOf(false) }
@@ -91,39 +87,48 @@ fun ModalCategory(
         )
     }
 
-    fun nameValid():Boolean{
+    fun nameValid(): Boolean {
         return categoryName.trim().isNotEmpty()
     }
 
-    fun isValid():Boolean{
+    fun isValid(): Boolean {
         return nameValid()
     }
 
-    fun submit(){
+    fun submit() {
 
-        if(isValid()){
+        if (isValid()) {
 
             if (value == null) {
-                categoryViewModel.addCategory(
-                    name = categoryName,
-                    active = true,
-                    color = backgroundColor.value.toArgb()
+
+                onSubmit(
+                    CategoryData(
+                        id = 0,
+                        name = categoryName,
+                        active = true,
+                        color = backgroundColor.value.toArgb()
+                    )
                 )
             } else {
-                categoryViewModel.update(
-                    id = value.id,
-                    name = categoryName,
-                    active = true,
-                    color = backgroundColor.value.toArgb()
+
+                onSubmit(
+                    CategoryData(
+                        id = value.id,
+                        name = categoryName,
+                        active = true,
+                        color = backgroundColor.value.toArgb()
+                    )
                 )
+
             }
+
             showErrorName = false
             categoryName = ""
             backgroundColor.value = colorInit
             onDismissRequest()
-        }else{
+        } else {
 
-            if(categoryName.trim().isEmpty()){
+            if (categoryName.trim().isEmpty()) {
 
                 showErrorName = true
             }
@@ -171,7 +176,7 @@ fun ModalCategory(
                                 .background(color = backgroundColor.value, shape = CircleShape)
                         )
                     },
-                    supportingText = { if(!nameValid() && showErrorName) Text(text = nameInvalidMessage)},
+                    supportingText = { if (!nameValid() && showErrorName) Text(text = nameInvalidMessage) },
                     isError = !nameValid() && showErrorName
                 )
 
@@ -213,7 +218,7 @@ fun ModalCategory(
                             containerColor = Green300
                         ),
                         onClick = {
-                           submit()
+                            submit()
                         },
                         shape = RoundedCornerShape(8.dp)
                     ) {
@@ -267,12 +272,4 @@ fun ModalCategory(
         }
 
     }
-}
-
-
-@Preview(showBackground = true)
-@Composable
-private fun CreateCatoryPreview() {
-
-    ModalCategory(onDismissRequest = {})
 }

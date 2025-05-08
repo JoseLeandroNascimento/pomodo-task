@@ -25,6 +25,10 @@ interface CategoryDao {
     @Query(value = "SELECT * FROM category_entity WHERE id = :id")
     fun getById(id:Int):Flow<CategoryEntity>
 
+    @Query("UPDATE category_entity SET active = :show WHERE id = :id")
+    suspend fun changeVisibility(id: Int, show: Boolean)
+
+
     @Update
     suspend fun update(data: CategoryEntity)
 }

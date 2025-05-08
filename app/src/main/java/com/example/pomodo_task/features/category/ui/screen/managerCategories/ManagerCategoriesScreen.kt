@@ -1,4 +1,4 @@
-package com.example.pomodo_task.features.category.ui.components
+package com.example.pomodo_task.features.category.ui.screen.managerCategories
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.MoreVert
@@ -29,11 +30,14 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -52,110 +56,150 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.pomodo_task.features.category.model.CategoryEntity
-import com.example.pomodo_task.features.category.ui.viewModel.CategoryViewModel
+import com.example.pomodo_task.features.category.ui.components.CategoryData
+import com.example.pomodo_task.features.category.ui.components.ModalCategory
 import com.example.pomodo_task.ui.theme.Gray400
 import com.example.pomodo_task.ui.theme.Green300
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Category(
     modifier: Modifier = Modifier,
-    categoryViewModel: CategoryViewModel = hiltViewModel()
+    onBack: () -> Unit,
+    categoriesViewModel: ManagerCategoriesViewModel = hiltViewModel()
 ) {
 
-    val categories by categoryViewModel.categories.collectAsState()
-    var showModal by remember { mutableStateOf(false) }
-    var valueEdit by remember { mutableStateOf<CategoryData?>(null) }
+    val categoryUIState by categoriesViewModel.state.collectAsState()
 
-    if (showModal) {
+    if (categoryUIState.showModal) {
         ModalCategory(
             onDismissRequest = {
-                valueEdit = null
-                showModal = false
+                categoriesViewModel.showModal(false)
             },
-            value = valueEdit
+            onSubmit = {
+
+                categoriesViewModel.onIdChanged(null)
+                categoriesViewModel.onNameChanged(it.name)
+                categoriesViewModel.onColorChanged(it.color)
+                categoriesViewModel.onActiveChanged(it.active)
+
+                categoriesViewModel.save()
+            },
+            value = if (categoryUIState.id != null) CategoryData(
+                id = categoryUIState.id!!,
+                name = categoryUIState.name,
+                active = categoryUIState.active,
+                color = categoryUIState.color,
+            ) else null
         )
     }
 
-    Column(
-        modifier = modifier
-            .padding(top = 4.dp)
-            .fillMaxSize()
-    ) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "Gerenciar categorias",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = if (isSystemInDarkTheme()) Color.White else Gray400
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = {
+                        onBack()
+                    }) {
+                        Icon(imageVector = Icons.Default.ArrowBackIosNew, contentDescription = null)
+                    }
+                },
+                actions = {
+                    TextButton(
+                        onClick = {
+                            categoriesViewModel.showModal(!categoryUIState.showModal)
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.Transparent,
+                            contentColor = Green300
+                        )
+                    ) {
+                        Icon(imageVector = Icons.Default.Add, contentDescription = null)
+                        Text(
+                            text = "Criar nova",
+                            fontSize = 18.sp
+                        )
+                    }
+                }
+            )
+        }
+    ) { innerPadding ->
 
-        CategoriesHeader(showModal = {
-            showModal = !showModal
-        })
-
-        LazyColumn(
-            modifier = Modifier
-                .padding(
-                    horizontal = 8.dp
-                )
-                .fillMaxWidth()
-                .fillMaxHeight(),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            contentPadding = PaddingValues(vertical = 4.dp)
+        Column(
+            modifier = modifier
+                .padding(innerPadding)
+                .padding(top = 4.dp)
+                .fillMaxSize()
         ) {
 
-            if(categories.isNotEmpty()){
 
-                items(items = categories, key = { it.id }) { category ->
-                    CategoriesItem(
-                        item = category,
-                        onEditSelect = { value ->
-                            showModal = true
-                            valueEdit = value
-                        },
-                        onChangeVisibility = { show ->
-                            categoryViewModel.update(
-                                id = category.id,
-                                name = category.name,
-                                color = category.color,
-                                active = show
-                            )
-                        }
-                    )
-                }
+            if (categoryUIState.categoriesAll.isNotEmpty() && !categoryUIState.isLoading) {
+                CategoriesList(
+                    onChangeVisibility = {
+                        categoriesViewModel.changeVisibility(it.id, it.active)
+                    },
+                    onEditSelect = {
+                        categoriesViewModel.showModal(true)
+                    },
+                    onDelete = {
+                        categoriesViewModel.delete(it)
+                    },
+                    categories = categoryUIState.categoriesAll
+                )
             }
         }
     }
+
 }
 
 @Composable
-fun CategoriesHeader(
+fun CategoriesList(
     modifier: Modifier = Modifier,
-    showModal: (() -> Unit)? = null
+    onEditSelect: (CategoryEntity) -> Unit,
+    onChangeVisibility: (CategoryEntity) -> Unit,
+    onDelete: (Int) -> Unit,
+    categories: List<CategoryEntity>
 ) {
 
-
-    Row(
+    LazyColumn(
         modifier = modifier
-            .padding(horizontal = 8.dp, vertical = 4.dp)
-            .fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Text(
-
-            text = "Gerenciar categorias",
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Medium,
-            color = if (isSystemInDarkTheme()) Color.White else Gray400
-        )
-
-        TextButton(
-            onClick = {
-                showModal?.invoke()
-            },
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.Transparent,
-                contentColor = Green300
+            .padding(
+                horizontal = 8.dp
             )
-        ) {
-            Icon(imageVector = Icons.Default.Add, contentDescription = null)
-            Text(
-                text = "Criar nova",
-                fontSize = 18.sp
+            .fillMaxWidth()
+            .fillMaxHeight(),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        contentPadding = PaddingValues(vertical = 4.dp)
+    ) {
+
+
+        items(items = categories, key = { it.id }) { category ->
+            CategoriesItem(
+                item = category,
+                onEditSelect = { value ->
+                    onEditSelect(
+                        category.copy(
+                            color = value.color,
+                            active = value.active,
+                            id = value.id,
+                            name = value.name
+                        )
+                    )
+                },
+                onDelete = {
+                    onDelete(it)
+                },
+                onChangeVisibility = { show ->
+                    onChangeVisibility(category.copy(active = show))
+                }
             )
         }
     }
@@ -165,12 +209,12 @@ fun CategoriesHeader(
 fun CategoriesItem(
     modifier: Modifier = Modifier,
     item: CategoryEntity,
+    onDelete: (Int) -> Unit,
     onEditSelect: (CategoryData) -> Unit,
     onChangeVisibility: (Boolean) -> Unit
 ) {
 
     var expanded by remember { mutableStateOf(false) }
-    val categoryViewModel: CategoryViewModel = hiltViewModel()
 
     Card(
         modifier = modifier
@@ -266,12 +310,12 @@ fun CategoriesItem(
                             leadingIcon = {
                                 Icon(
                                     modifier = Modifier.size(20.dp),
-                                    imageVector = if(item.active) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                                    imageVector = if (item.active) Icons.Default.VisibilityOff else Icons.Default.Visibility,
                                     contentDescription = null
                                 )
                             },
                             text = {
-                                Text(text = if(item.active) "Ocultar" else "Exposição")
+                                Text(text = if (item.active) "Ocultar" else "Exposição")
                             },
                             onClick = {
                                 expanded = false
@@ -291,7 +335,7 @@ fun CategoriesItem(
                                 Text(text = "Deletar")
                             },
                             onClick = {
-                                categoryViewModel.removeCategory(item.id)
+                                onDelete(item.id)
                                 expanded = false
                             }
                         )
@@ -306,5 +350,5 @@ fun CategoriesItem(
 @Preview(showBackground = true)
 @Composable
 private fun CategoryPreview() {
-    Category()
+    Category(onBack = {})
 }

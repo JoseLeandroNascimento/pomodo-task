@@ -4,8 +4,9 @@ import com.example.pomodo_task.core.database.BaseRepository
 import com.example.pomodo_task.features.category.model.CategoryEntity
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Singleton
 
-
+@Singleton
 class CategoryRepository @Inject constructor(
     private val categoryDao: CategoryDao
 ): BaseRepository<CategoryEntity> {
@@ -32,6 +33,10 @@ class CategoryRepository @Inject constructor(
 
     fun getAllActives():Flow<List<CategoryEntity>>{
         return categoryDao.getAllActive()
+    }
+
+    suspend fun changeVisibility(id:Int,show:Boolean){
+        categoryDao.changeVisibility(id,show)
     }
 
 }
